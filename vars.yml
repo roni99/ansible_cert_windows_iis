@@ -1,0 +1,10 @@
+wincertes_version: "1.1.3"
+msi_url: "https://github.com/aloopkin/WinCertes/releases/download/{{ wincertes_version }}/WinCertes-{{ wincertes_version }}.msi"
+download_path: "C:\\Users\\Administrator\\Downloads"
+exe_path: "C:\\Program Files\\WinCertes"
+
+wincertes_opts:
+  bindname: "Default Web Site"
+  periodic: "no"
+  email: null
+  webroot: "C:\\inetpub\\wwwroot"

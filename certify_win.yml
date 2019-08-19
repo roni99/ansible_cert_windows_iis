@@ -1,0 +1,50 @@
+- name: "Connect to windows"
+  hosts: aws
+  gather_facts: False
+  vars_files:
+    - vars.yml
+
+  tasks:
+
+    - name: "Install IIS (Web-Server only)"
+      win_feature:
+        name: "Web-Server"
+        state: "present"
+      register: feature_iis
+    - debug: var=feature_iis
+
+    - name: "Reboot if installing Web-Server feature requires it"
+      win_reboot:
+      when: feature_iis.reboot_required
+
+    - name: "Download WinCertes MSI"
+      win_get_url:
+        url: "{{ msi_url }}"
+        dest: "{{ download_path }}"
+      register: download
+    - debug: var=download
+
+    - name: "Install WinCertes"
+      win_package:
+        path: "{{ download_path }}\\WinCertes-1.1.3.msi"
+      register: installation
+    - debug: var=installation
+
+    - name: "Include WinCertes.exe in PATH"
+      win_path:
+        elements: "{{ exe_path }}"
+        state: "present"
+      register: path_set
+    - debug: var=path_set
+
+    - name: "Reboot for PATH to update"
+      win_reboot:
+      register: reboot
+      when: path_set.changed | bool
+    - debug: var=reboot
+
+    # WinCertes API: https://github.com/aloopkin/WinCertes#command-line-options
+    - name: "Download and Install Certificate through WinCertes"
+      win_command: WinCertes.exe -d "{{ inventory_hostname }}" -w "{{ wincertes_opts.webroot }}" -b "{{ wincertes_opts.bindname }}" -p "{{ wincertes_opts.periodic }}" -e "{{ wincertes_opts.email }}"
+      register: certification
+    - debug: var=certification
