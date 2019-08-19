@@ -1,6 +1,8 @@
+target_user: "Administrator"
+
 wincertes_version: "1.1.3"
 msi_url: "https://github.com/aloopkin/WinCertes/releases/download/{{ wincertes_version }}/WinCertes-{{ wincertes_version }}.msi"
-download_path: "C:\\Users\\Administrator\\Downloads"
+download_path: "C:\\Users\\{{ target_user }}\\Downloads"
 exe_path: "C:\\Program Files\\WinCertes"
 
 wincertes_opts:
